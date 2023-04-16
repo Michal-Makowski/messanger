@@ -27,11 +27,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .headers().frameOptions().disable()// only for h2
-                .and()
+              //  .headers().frameOptions().disable()// only for h2
+              //  .and()
                 .csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers(toH2Console()).permitAll() // only for h2
+              //  .requestMatchers(toH2Console()).permitAll() // only for h2
                 .requestMatchers("/swagger-ui/**", "/v3/**").permitAll() // OpenApi
                 .requestMatchers(HttpMethod.POST, SecurityConstants.REGISTER_PATH).permitAll()
                 .anyRequest().authenticated()
