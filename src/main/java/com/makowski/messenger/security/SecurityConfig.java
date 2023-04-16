@@ -32,6 +32,7 @@ public class SecurityConfig {
                 .csrf().disable()
                 .authorizeHttpRequests()
                 .requestMatchers(toH2Console()).permitAll() // only for h2
+                .requestMatchers("/swagger-ui/**", "/v3/**").permitAll() // OpenApi
                 .requestMatchers(HttpMethod.POST, SecurityConstants.REGISTER_PATH).permitAll()
                 .anyRequest().authenticated()
                 .and()

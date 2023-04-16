@@ -9,6 +9,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -37,20 +39,28 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
     }
 
-    @ExceptionHandler(NotMatchException.class)
-    public ResponseEntity<Object> handleNotMatchException(NotMatchException e){
+    @ExceptionHandler({NotMatchException.class, NullPointerException.class})
+    public ResponseEntity<Object> handleRuntimeException(RuntimeException e){
         ErrorResponse errorResponse = new ErrorResponse(Arrays.asList(e.getMessage()));
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
+
     //handle every @Valid exception
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException e, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         List<String> errors = new ArrayList<>();
-        for (int i = 0; i < e.getBindingResult().getAllErrors().size(); i++) {
+        for (int i = 0; i < ex.getBindingResult().getAllErrors().size(); i++) {
             //Make custom message: Validate field name + message from ValidationConstants
-            errors.add(e.getFieldErrors().get(i).getField() + " " + e.getAllErrors().get(i).getDefaultMessage());
+            errors.add(ex.getFieldErrors().get(i).getField() + " " + ex.getAllErrors().get(i).getDefaultMessage());
         }
         return new ResponseEntity<>(new ErrorResponse(errors), HttpStatus.BAD_REQUEST);
+    }
+
+    @Override
+    @Nullable
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+                ErrorResponse errorResponse = new ErrorResponse(Arrays.asList(ex.getMessage()));
+                return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     

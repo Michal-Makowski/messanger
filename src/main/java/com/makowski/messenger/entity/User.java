@@ -9,6 +9,7 @@ import com.makowski.messenger.validation.Password;
 import com.makowski.messenger.validation.Unique;
 import com.makowski.messenger.validation.ValidationConstans;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -32,11 +33,13 @@ import lombok.NonNull;
 @Table(name = "users")
 public class User {
 
+    @Schema(readOnly = true)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
+    @Schema(example = "MMuller")
     @NonNull
     @Size(min = 2, max = 25, message = ValidationConstans.NOT_SIZE)
     @Pattern(regexp = ValidationConstans.PATTERN_USERNAME, message = ValidationConstans.NO_MATCH_PATTERN_USERNAME)
@@ -44,18 +47,21 @@ public class User {
     @Column(name = "username", nullable = false, unique = true)
     private String username;
 
+    @Schema(example = "Max")
     @NonNull
     @Size(min = 2, max = 20, message = ValidationConstans.NOT_SIZE)
     @Pattern(regexp = ValidationConstans.PATTERN_AZ, message = ValidationConstans.NO_MATCH_PATTERN_AZ)
     @Column(name = "first_name", nullable = false)
     private String firstName;
 
+    @Schema(example = "Muller")
     @NonNull
     @Size(min = 2, max = 20, message = ValidationConstans.NOT_SIZE)
     @Pattern(regexp = ValidationConstans.PATTERN_AZ, message = ValidationConstans.NO_MATCH_PATTERN_AZ)
     @Column(name = "last_name", nullable = false)
-    private String LastName;
+    private String lastName;
 
+    @Schema(example = "m-muller@gmail.com")
     @NonNull
     @NotBlank(message = ValidationConstans.NOT_BLANK)
     @Email(message = ValidationConstans.EMAIL_NOT_VALID)
@@ -63,6 +69,7 @@ public class User {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
+    @Schema(example = "easyPassword1", writeOnly = true)
     @NonNull
     @JsonProperty(access = Access.WRITE_ONLY)
     @Password
