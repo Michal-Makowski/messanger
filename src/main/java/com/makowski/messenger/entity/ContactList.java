@@ -1,11 +1,10 @@
 package com.makowski.messenger.entity;
 
+
+
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,16 +13,18 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
-@Table(name = "chat")
-public class Chat {
+@Table(name = "contact_list")
+public class ContactList {
     
     @Schema(readOnly = true)
     @Id
@@ -31,16 +32,16 @@ public class Chat {
     @Column(name = "id")
     private Long id;
 
-    @JsonIgnore
+    @OneToOne(optional = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
+
     @ManyToMany
     @JoinTable(
-        name = "chat_users",
-        joinColumns = @JoinColumn(name = "chat_id", referencedColumnName = "id"),
+        name = "user_contact_list",
+        joinColumns =@JoinColumn(name = "contact_list_id", referencedColumnName = "id"),
         inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id")
     )
-    private List<User> chatUsers;
+    private List<User> users;
     
-    @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL)    
-    private List<Message> messages;
-
 }

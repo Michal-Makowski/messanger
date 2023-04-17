@@ -25,7 +25,7 @@ public class OpenApiConfig {
         customOpenApi
             .path("/login", new PathItem()
             .post(new Operation()
-                .tags(List.of("Authentication"))
+                .tags(List.of("5. Authentication"))
                 .summary("Login")
                 .description("Login with username and password.")
                 .responses(new ApiResponses()

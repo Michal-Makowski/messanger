@@ -3,6 +3,7 @@ package com.makowski.messenger.entity;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.makowski.messenger.validation.ValidationConstans;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -57,6 +58,7 @@ public class Message {
     private User user;
 
     @Schema(readOnly = true)
+    @JsonIgnore
     @ManyToOne(optional = false)
     @JoinColumn(name = "chat_id", referencedColumnName = "id")
     private Chat chat;

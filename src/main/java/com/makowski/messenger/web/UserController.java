@@ -1,5 +1,7 @@
 package com.makowski.messenger.web;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,7 @@ import com.makowski.messenger.exception.ErrorResponse;
 import com.makowski.messenger.service.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -28,7 +31,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
-@Tag(name = "User Controller", description = "Manage User enitity")
+@Tag(name = "1. User Controller", description = "Manage User enitity")
 @AllArgsConstructor
 @RestController
 @RequestMapping("/user")
@@ -46,20 +49,20 @@ public class UserController {
         return new ResponseEntity<>(userService.createUser(user), HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Get user", description = "Search user by username in our database")
+    @Operation(summary = "Find user", description = "Search user by username in our database. Search begin from 1 letter and ignore case. Return list of users")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "User is successfully found in our Database",content = @Content(schema = @Schema(implementation = User.class))),
+        @ApiResponse(responseCode = "201", description = "Search successfully, return list with results",content = @Content(array = @ArraySchema (schema = @Schema(implementation = User.class)))),
         @ApiResponse(responseCode = "404", description = "User with {username} don't exist in our database", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),  
         @ApiResponse(responseCode = "401", description = "User is not authenticated, or have not valid JWT", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @GetMapping(value = "/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> GetUser(@PathVariable String username){
-        return new ResponseEntity<User>(userService.getUserByUsername(username),HttpStatus.OK);
+    public ResponseEntity<List<User>> findUser(@PathVariable String username){
+        return new ResponseEntity<>(userService.findUser(username),HttpStatus.OK);
     }
 
     @Operation(summary = "Update User", description = "Update User Information (only first and last name). Every User can change information only about himself. User must be authenticated.")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "202", description = "User have successfully updated his information (firs and last name)"),
+        @ApiResponse(responseCode = "202", description = "User have successfully updated his information (firs and last name)",content = @Content(schema = @Schema(implementation = User.class))),
         @ApiResponse(responseCode = "400", description = "User can't be updated. Check Request Body, some field can be not valid, or Request Body may be not complete", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),  
         @ApiResponse(responseCode = "401", description = "User is not authenticated, or have not valid JWT", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))  
     })
@@ -70,7 +73,7 @@ public class UserController {
 
     @Operation(summary = "Change password", description = "Change User password. User can change only his own password and need to provide his old password as well. User must be authenticated.")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "User have successfully change his password"),
+        @ApiResponse(responseCode = "200", description = "User have successfully change his password", content = @Content(schema = @Schema(implementation = User.class))),
         @ApiResponse(responseCode = "400", description = "User can't change his password. Check Request Body, some field can be not valid, or entered password is incorrect", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),  
         @ApiResponse(responseCode = "401", description = "User is not authenticated, or have not valid JWT", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))  
     })
@@ -81,7 +84,7 @@ public class UserController {
     
     @Operation(summary = "Change e-mail", description = "Change User e-mail. User can change only his own e-mail and need to enter his password as well. User must be authenticated.")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "User have successfully change his e-mail"),
+        @ApiResponse(responseCode = "200", description = "User have successfully change his e-mail", content = @Content (schema = @Schema(implementation = User.class))),
         @ApiResponse(responseCode = "400", description = "User can't change his e-mail. Check Request Body, some field can be not valid, or entered password is incorrect", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),  
         @ApiResponse(responseCode = "401", description = "User is not authenticated, or have not valid JWT", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))  
     })

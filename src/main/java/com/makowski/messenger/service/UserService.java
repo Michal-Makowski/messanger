@@ -1,5 +1,7 @@
 package com.makowski.messenger.service;
 
+import java.util.List;
+
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,10 +22,13 @@ public class UserService {
 
     private UserRepository userRepository;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private ContactListService contactListService;
 
     public User createUser(User user) {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
+        userRepository.save(user);
+        contactListService.createContactList(user);
+        return user;
     }
 
     public User updateUser(UpdateUserDto updateUserDto){
@@ -36,6 +41,11 @@ public class UserService {
     public void deleteUser(){
         User user = extractUser();
         userRepository.delete(user);
+    }
+
+    public List<User> findUser(String username){
+        return userRepository.findByUsernameContainingIgnoreCase(username)
+            .orElseThrow(() -> new EntityNotFoundException(username));
     }
 
     public User changePassword(ChangePasswordDto changePasswordDto){

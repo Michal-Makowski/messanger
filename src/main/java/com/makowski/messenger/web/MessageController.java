@@ -19,6 +19,7 @@ import com.makowski.messenger.exception.ErrorResponse;
 import com.makowski.messenger.service.MessageService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -27,7 +28,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
-@Tag(name = "Message Controller", description = "Manage Message enitity")
+@Tag(name = "2. Message Controller", description = "Manage Message enitity")
 @AllArgsConstructor
 @RestController
 @RequestMapping("/message")
@@ -37,7 +38,7 @@ public class MessageController {
 
     @Operation(summary = "Send message", description = "An authenticated user can send a message to one or more users. Every time when User sends first message to another User (or group of Users) API automatically create new Chat.")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "User have successfully sent message to one or more users"),
+        @ApiResponse(responseCode = "201", description = "User have successfully sent message to one or more users", content = @Content(schema = @Schema(implementation = Message.class))),
         @ApiResponse(responseCode = "400", description = "User can't send message. Check Request Body, some field can be not valid", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
         @ApiResponse(responseCode = "404", description = "User can't send message. One or more Users with {username} don't exist in our database", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),  
         @ApiResponse(responseCode = "401", description = "User is not authenticated, or have not valid JWT", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))  
@@ -49,7 +50,7 @@ public class MessageController {
 
     @Operation(summary = "Get Chat", description = "An authenticated user can get chat between another User (or group of Users) and himself. When chat between Users don't exist, create new empty chat.")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "User have successful received messages between him and another user (or group of users). Messages are sorted by created date. ", content = @Content(schema = @Schema(implementation = Message.class))),
+        @ApiResponse(responseCode = "201", description = "User have successful received messages between him and another user (or group of users). Messages are sorted by created date. ", content = @Content(array = @ArraySchema (schema = @Schema(implementation = Message.class)))),
         @ApiResponse(responseCode = "404", description = "User can't received a message. One or more Users with {username} don't exist in our database", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),  
         @ApiResponse(responseCode = "401", description = "User is not authenticated, or have not valid JWT", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))  
     })
