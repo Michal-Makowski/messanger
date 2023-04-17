@@ -23,6 +23,7 @@ public class ChatService {
         chat.setChatUsers(users);
         return chatRepository.save(chat);   
     }
+
     //Check if Chat with all user from request exist in our database and return Chat otherwise make new Chat
     public Chat getChat(User user, List<User> users){
         //Get from database every Chat with user. 

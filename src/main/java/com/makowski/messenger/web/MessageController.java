@@ -49,7 +49,7 @@ public class MessageController {
 
     @Operation(summary = "Get Chat", description = "An authenticated user can get chat between another User (or group of Users) and himself. When chat between Users don't exist, create new empty chat.")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "User have successful received messages between him and another user (or group of users)", content = @Content(schema = @Schema(implementation = Message.class))),
+        @ApiResponse(responseCode = "201", description = "User have successful received messages between him and another user (or group of users). Messages are sorted by created date. ", content = @Content(schema = @Schema(implementation = Message.class))),
         @ApiResponse(responseCode = "404", description = "User can't received a message. One or more Users with {username} don't exist in our database", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),  
         @ApiResponse(responseCode = "401", description = "User is not authenticated, or have not valid JWT", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))  
     })

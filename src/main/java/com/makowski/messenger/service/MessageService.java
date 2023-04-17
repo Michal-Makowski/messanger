@@ -2,6 +2,7 @@ package com.makowski.messenger.service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -41,7 +42,9 @@ public class MessageService {
     public List<Message> getChat(List<String> usernames){
         User user = userService.extractUser();
         Chat chat = chatService.getChat(user, convertUsernamesToUsers(usernames));
-        return chat.getMessages();
+        List<Message> sortedMessages = chat.getMessages();
+        sortedMessages.sort(Comparator.comparing(Message :: getCreatedAt));
+        return sortedMessages;
     }
     
     public void deleteMessage(Long id){

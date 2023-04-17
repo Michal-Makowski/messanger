@@ -4,6 +4,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,6 +44,17 @@ public class UserController {
     @PostMapping(value = "/register", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
         return new ResponseEntity<>(userService.createUser(user), HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "Get user", description = "Search user by username in our database")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "User is successfully found in our Database",content = @Content(schema = @Schema(implementation = User.class))),
+        @ApiResponse(responseCode = "404", description = "User with {username} don't exist in our database", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),  
+        @ApiResponse(responseCode = "401", description = "User is not authenticated, or have not valid JWT", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @GetMapping(value = "/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<User> GetUser(@PathVariable String username){
+        return new ResponseEntity<User>(userService.getUserByUsername(username),HttpStatus.OK);
     }
 
     @Operation(summary = "Update User", description = "Update User Information (only first and last name). Every User can change information only about himself. User must be authenticated.")
