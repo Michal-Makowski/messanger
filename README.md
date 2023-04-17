@@ -1,4 +1,4 @@
-# messanger API
+# Messanger API
 Spring Boot Messenger API
 Deployed on Railway.app
 
